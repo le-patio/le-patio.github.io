@@ -1,8 +1,4 @@
-@font-face {
-  font-family: "times new roman, serif";
-  font-weight: normal;
-  font-style: normal;
-}
+
 *,
 *:after,
 *:before {
@@ -10,7 +6,7 @@
   padding: 0;
   margin: 0;
   outline: 0;
-  font-family: "times new roman, serif";
+  font-family: 'Times New Roman', Times, serif;
   text-underline-offset: 0.2vw;
 }
 
@@ -19,6 +15,7 @@ html {
   height: 100dvh;
   width: 100vw;
   font-size: 1.8vw;
+  font-family: 'Times New Roman', Times, serif;
   line-height: 1.9vw;
   position: fixed;
   top: 0;
@@ -101,7 +98,7 @@ nav ul > div {
   line-height: 2vw;
 }
 nav ul > div.width2 {
-  width: 50vw;
+  width: 70vw;
 }
 nav ul > div.first {
   padding-top: 3vw;
@@ -122,8 +119,8 @@ nav ul > div.first {
 
 .cta_cart {
   position: fixed;
-  top: 3vw;
-  left: 76vw;
+  top: 1vw;
+  left: 89vw;
 }
 @media screen and (max-width: 800px) {
   .cta_cart {
