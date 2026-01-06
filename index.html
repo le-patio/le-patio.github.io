@@ -4,68 +4,95 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
-  <title>LE PATIO / Shop</title>
-  <meta name="description" content="LE PATIO - Diseños exclusivos y piezas únicas.">
+  <title>LE PATIO | Fine Jewelry</title>
   
   <link href="https://age-hh.com/assets/css/style.css" rel="stylesheet">
+  
+  <style>
+    /* Aseguramos que el cuerpo no tenga scroll en la home */
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; 
+      background-color: #000;
+    }
+
+    .video-background {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover; /* Esto hace que cubra toda la pantalla sin deformarse */
+    }
+
+    .hero-container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      pointer-events: none; /* Permite hacer click a través del título si fuera necesario */
+    }
+
+    .main-title {
+      font-size: clamp(2rem, 8vw, 5rem); /* Tamaño fluido: mínimo 2rem, ideal 8% del ancho, máx 5rem */
+      letter-spacing: 0.8rem;
+      color: #fff;
+      text-transform: uppercase;
+      z-index: 10;
+      font-weight: 300;
+      text-shadow: 0 0 20px rgba(0,0,0,0.3); /* Mejora legibilidad sobre el video */
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 20;
+      background: transparent !important;
+    }
+
+    /* Ajuste para que los links se vean blancos sobre el video oscuro */
+    nav ul li a, nav ul div li p, .filter span {
+      color: #fff !important;
+    }
+  </style>
 </head>
 
-<body ndx--target-view="shop">
+<body ndx--target-view="home">
+
   <nav>
     <ul>
       <div class="first">
         <li class="cta_home">
           <a class="internal a_home active" href="index.html">LE PATIO</a>
         </li>
-        <li class="start">
-          <p>Series y piezas únicas</p>
-        </li>
       </div>
 
       <div class="width2">
-        <li class="mail">
-          <a href="mailto:contacto@lepatio.com">contacto@lepatio.com</a>
-        </li>
-        <div class="filter">
-          <span data-target="Pants">Pantalones</span>, 
-          <span data-target="Tops">Tops</span>, 
-          <span data-target="Dresses">Vestidos</span>, 
-          <span data-target="Coats">Abrigos</span>
-        </div>
+        <li style="display:inline; margin-right:15px;"><a href="shop.html" class="internal">Shop</a></li>
+        <li style="display:inline;"><a href="collections.html" class="internal">Collections</a></li>
       </div>
 
       <div>
-        <li class="cta_about">
-          <a class="internal" href="about.html">Sobre Nosotros</a>
+        <li class="cta_search" style="display:inline; margin-right:15px;">
+          <a href="search.html" class="internal">Buscar</a>
         </li>
-        <li class="cta_cart">
-          <a class="a_cart internal" href="cart.html">Carrito <span id="cart-count">(0)</span></a>
+        <li class="cta_cart" style="display:inline;">
+          <a class="a_cart internal" href="cart.html">Cart <span id="cart-count">(0)</span></a>
         </li>
       </div>
     </ul>
   </nav>
 
-  <div id="content">
-    <main ndx--title="LE PATIO / Shop" ndx--template="shop">
-      
-      <a class="productteaser Pants" href="producto-ejemplo.html">
-        <img src="https://age-hh.com/assets/poster.jpg" data-src="ruta/a/tu/imagen.jpg" alt="Producto LE PATIO">
-        <div class="productdescription">
-          Pantalón "Patio" Rose, 130€
-        </div>
-      </a>
+  <img src="https://d2w9rnfcy7mm78.cloudfront.net/42421705/original_d268699bfd4bd8f080723f02b537f448.gif" class="video-background" alt="Background">
 
-      <a class="productteaser Tops" href="producto-ejemplo-2.html">
-        <img src="https://age-hh.com/assets/poster.jpg" data-src="ruta/a/tu/imagen2.jpg" alt="Top LE PATIO">
-        <div class="productdescription">
-          Top Asimétrico Soft Cotton, 120€
-        </div>
-      </a>
-
-    </main>
+  <div class="hero-container">
+    <h1 class="main-title">LE PATIO</h1>
   </div>
 
   <script src="https://age-hh.com/assets/js/libs.js"></script>
-  <script src="https://age-hh.com/assets/js/script.js"></script>
-</body>
+  </body>
 </html>

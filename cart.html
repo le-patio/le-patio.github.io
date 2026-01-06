@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
+  <title>LE PATIO | Cart</title>
+  
+  <link href="https://age-hh.com/assets/css/style.css" rel="stylesheet">
+</head>
+
+<body ndx--target-view="cart">
+  <nav>
+    <ul>
+      <div class="first">
+        <li class="cta_home">
+          <a class="internal a_home" href="index.html">LE PATIO</a>
+        </li>
+        <li class="start">
+          <p>Fine Jewelry</p>
+        </li>
+      </div>
+
+      <div class="width2">
+        <li class="mail">
+          <a href="mailto:contacto@lepatio.com">contacto@lepatio.com</a>
+        </li>
+        <div class="filter hidden"></div>
+      </div>
+
+      <div>
+        <li><a href="shop.html" class="internal">Shop</a></li>
+        <li class="cta_cart">
+          <a class="a_cart internal active" href="cart.html">Cart <span id="cart-count">(0)</span></a>
+        </li>
+      </div>
+    </ul>
+  </nav>
+
+  <div class="maincart">
+    <script src="https://www.paypal.com/sdk/js?client-id=TU_CLIENT_ID_AQUÍ&currency=EUR"></script>
+
+    <div class="container">
+      <div class="cart">
+        <p id="empty">Tu carrito está actualmente vacío.</p>
+        <p id="success-message" style="display:none;">Gracias por tu pedido. Nos pondremos en contacto contigo pronto vía email con los detalles de tu compra.</p>
+
+        <div class="cartcontent">
+          <div id="cart-items"></div>
+          
+          <div class="subtotal">
+            <span class="width2">Subtotal:</span> 
+            <span id="cart-total">0.00</span>€
+          </div>
+
+          <div class="shipping">
+            <label for="shipping" class="width3">Seleccionar Envío:</label>
+            <select id="shipping" onchange="updateCart()">
+              <option value="5">5€ (España - Península)</option>
+              <option value="10">10€ (Europa)</option>
+              <option value="15">15€ (Resto del mundo)</option>
+            </select>
+          </div>
+
+          <p class="total">
+            <strong>
+              <span class="width2">Total Final:</span> 
+              <span id="final-total">0.00</span>€
+            </strong>
+          </p>
+
+          <button id="clear-cart-btn" class="hidden" onclick="clearCart()">Vaciar Carrito</button>
+          <div id="paypal-button-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav>
+    <ul class="footnav">
+      <div>
+        <li><a href="https://www.instagram.com/lepatio" target="_blank">Instagram</a></li>
+      </div>
+      <div class="footerright footerright1">
+        <li><a class="internal" href="order-info.html">Información de Pedido</a></li>
+      </div>
+      <div class="footerright footerright2">
+        <li><a class="internal" href="legal.html">Aviso Legal</a></li>
+      </div>
+    </ul>
+  </nav>
+
+  <script src="https://age-hh.com/assets/js/libs.js"></script>
+  <script src="https://age-hh.com/assets/js/script.js"></script>
+</body>
+</html>
