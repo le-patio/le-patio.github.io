@@ -4,115 +4,121 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
   <title>SHOP | LE PATIO</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+
+   <link rel="stylesheet" type="text/css" href="style.css">
+  
   <style>
-    /* Unificado con Código A */
+    /* RESET & BASE */
+    * { box-sizing: border-box; }
     body, html {
       margin: 0;
       padding: 0;
-      background-color: #f1f1f1; /* Fondo claro para la tienda */
+      background-color: #f1f1f1;
       font-family: 'Times New Roman', Times, serif;
-    }
-    
-    /* Espaciado para el nav fijo y contenedor AJAX */
-    #content {
-      width: 100%;
-      height: 100%;
+      color: #000;
+      
     }
 
-    /* Navegación (Copia exacta del Código A) */
+    /* NAVEGACIÓN (Estilo AGE hh / Minimal) */
     nav {
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 20;
-      background: transparent !important;
+      z-index: 100;
+      background: #f1f1f1;
+      padding: 20px 40px;
     }
 
     nav ul {
       display: flex;
       justify-content: space-between;
       list-style: none;
-      padding: 20px 40px;
+      padding: 0;
       margin: 0;
+      font-size: 0.9rem;
     }
 
-    nav ul li a {
-      color: #000 !important; /* En la shop usamos negro para contraste */
-      text-transform: none;
-      font-size: 0.9rem;      
+    nav a {
+      color: #000;
+      
     }
 
-    /* Estilo de Filtros */
-    .filter { text-align: center; margin-bottom: 80px; cursor: pointer; }
-    .filter span { margin: 0 8px; text-transform: none; font-size: 0.9rem; color: #000; }
-    .filter span.on { border-bottom: 1px solid #000; }
-    .filter span.passive { opacity: 0.3; }
+    .nav-left, .nav-right {
+      display: flex;
+      gap: 20px;
+    }
 
-    /* Cuadrícula de productos */
-    .products-grid { 
-      display: grid; 
-      grid-template-columns: 1fr; 
-      gap: 40px 20px; 
+    /* FILTROS */
+    .filter-container {
+      margin-top: 100px; /* Espacio para el nav fijo */
+      margin-bottom: 40px;
       padding: 0 40px;
-      max-width: 600px; 
-      margin: 0 auto; 
+      font-size: 0.9rem;
     }
 
-    .productteaser { text-align: center; transition: opacity 0.3s; }
-    .productteaser.hidden { display: none; }
-    .productteaser img { width: 100%; height: auto; margin-bottom: 15px; }
-    
-    .product-info h3 { font-weight: 300; margin-bottom: 5px; font-size: 1.1rem; }
-    .product-info p { margin: 5px 0; font-size: 0.9rem; }
-    
-    .product-info select { 
-      margin: 10px 0; 
-      padding: 8px; 
-      border: 1px solid #ccc; 
-      width: 100%; 
-      font-family: serif;
-      background: white;
-    }
-    
-    .add-btn { 
-      background: #000; color: #fff; border: none; padding: 12px 20px; 
-      width: 100%; cursor: pointer; text-transform: uppercase; font-size: 0.75rem;
-      letter-spacing: 0.1rem;
+    .filter span {
+      cursor: pointer;
+      margin-right: 5px;
+      opacity: 0.4;
       transition: opacity 0.2s;
     }
-    .add-btn:hover { opacity: 0.8; }
 
-    /* Desplegable Collections adaptado al diseño A */
-    .nav-item { position: relative; display: inline-block; }
-    .dropdown-content {
-      display: none; 
-      position: absolute;
-      background-color: #f1f1f1;
-      min-width: 180px; 
-      z-index: 30;
-      top: 100%;
-      left: 0;
-      padding-top: 10px;
+    .filter span.on {
+      opacity: 1;
+      border-bottom: 1px solid #000;
     }
-    .dropdown-content a { 
-      color: black !important; 
-      padding: 10px 0; 
-      text-decoration: none; 
-      display: block; 
-      font-size: 0.8rem;
-    }
-    .nav-item:hover .dropdown-content { display: block; }
 
+    /* GRID DE PRODUCTOS (Lógica AGE hh) */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+      gap: 40px 20px;
+      padding: 0 40px 80px 40px;
+    }
+
+    .productteaser {
+      text-decoration: none;
+      color: #000;
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+
+    .productteaser img, .productteaser video {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    .productdescription {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      line-height: 1.2;
+    }
+
+    .productteaser.hidden {
+      display: none;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: 1fr; /* 1 columna en móvil */
+        padding: 0 20px;
+      }
+      nav { padding: 20px; }
+      .filter-container { padding: 0 20px; }
+    }
   </style>
 </head>
+
 <body ndx--target-view="shop">
 
   <nav>
     <ul>
       <div class="nav-left">
         <li style="display:inline; margin-right:15px;">
-          <a href="index.html">Back</a>
+          <a href="index.html">Shop</a>
         </li>
         <li style="display:inline;">
           <a href="collections.html">Collections</a>
@@ -121,7 +127,7 @@
 
       <div class="nav-right">
         <li class="cta_search" style="display:inline; margin-right:150px;">
-          <a href="search.html">Buscar</a>
+          <a href="search.html">Search</a>
         </li>
         <li style="display:inline;">
           <a href="cart.html">Cart <span id="cart-count">(0)</span></a>
@@ -131,55 +137,77 @@
   </nav>
 
   <main id="content">
-
-    <div class="filter">
-      <span class="on" data-target="all">All</span>
-      <span data-target="anillos">Anillos</span>
-      <span data-target="collares">Collares</span>
-      <span data-target="pendientes">Pendientes</span>
-      <span data-target="pulseras">Pulseras</span>
+    
+    <div class="filter-container">
+      <div class="filter">
+        <span class="on" data-target="all">All</span>,
+        <span data-target="anillos">Anillos</span>,
+        <span data-target="collares">Collares</span>,
+        <span data-target="pendientes">Pendientes</span>,
+        <span data-target="pulseras">Pulseras</span>
+      </div>
     </div>
 
-    <div class="products-grid">
+    <div class="products-grid" ndx--title="LE PATIO / Shop" ndx--template="shop">
       
-      <div class="productteaser anillos">
-        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0" alt="Anillo">
-        <div class="product-info">
-          <h3>Anillo Silver Leaf</h3>
-          <p>120.00€</p>
-          <select id="size-ring-1">
-            <option value="8">Talla 8</option>
-            <option value="10">Talla 10</option>
-            <option value="12">Talla 12</option>
-            <option value="14">Talla 14</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Anillo Silver Leaf', 120, document.getElementById('size-ring-1').value, 1)">Añadir al carrito</button>
+      <a class="productteaser anillos" href="product-detail.html" ndx-target="product-detail.html">
+        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0" alt="Anillo Silver Leaf">
+        <div class="productdescription">
+          Anillo Silver Leaf, 120.00€
         </div>
-      </div>
+      </a>
 
-      <div class="productteaser collares">
-        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41527893/original_bed7e61b1241647953bf8ab5e2ec2623.png?1764715602?bc=0" alt="Collar">
-        <div class="product-info">
-          <h3>Collar Aqua</h3>
-          <p>85.00€</p>
-          <button class="add-btn" onclick="addToCart('Collar Aqua', 85, 'Unique', 1)">Añadir al carrito</button>
+      <a class="productteaser collares" href="product-detail.html" ndx-target="product-detail.html">
+        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41527893/original_bed7e61b1241647953bf8ab5e2ec2623.png?1764715602?bc=0" alt="Collar Aqua">
+        <div class="productdescription">
+          Collar Aqua, 85.00€
         </div>
-      </div>
+      </a>
 
-      <div class="productteaser pendientes">
-        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581361/original_bee3adae780b76faae3a99ba00dbd66a.jpg?1764881765?bc=0" alt="Pendientes">
-        <div class="product-info">
-          <h3>Pendientes Drop</h3>
-          <p>60.00€</p>
-          <button class="add-btn" onclick="addToCart('Pendientes Drop', 60, 'Unique', 1)">Añadir al carrito</button>
+      <a class="productteaser pendientes" href="product-detail.html" ndx-target="product-detail.html">
+        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581361/original_bee3adae780b76faae3a99ba00dbd66a.jpg?1764881765?bc=0" alt="Pendientes Drop">
+        <div class="productdescription">
+          Pendientes Drop, 60.00€
         </div>
-      </div>
+      </a>
+
+      <a class="productteaser pulseras" href="product-detail.html" ndx-target="product-detail.html">
+        <video muted loop playsinline autoplay poster="https://age-hh.com/assets/poster.jpg">
+          <source src="https://age-hh.com/media/pages/shop/soft-viscose-stretch-pants-flared-high-waist-2-seams/ebe2d3d845-1763726437/pink-90s-top-pants.mp4" type="video/mp4">
+        </video>
+        <div class="productdescription">
+          Pulsera Flowing Video, 140.00€
+        </div>
+      </a>
 
     </div>
   </main>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="libs.js"></script> 
-  <script src="script.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Lógica de filtrado
+      $('.filter span').on('click', function() {
+        // UI de los botones
+        $('.filter span').removeClass('on');
+        $(this).addClass('on');
+
+        const target = $(this).attr('data-target');
+
+        // Filtrado de elementos
+        if (target === 'all') {
+          $('.productteaser').removeClass('hidden');
+        } else {
+          $('.productteaser').each(function() {
+            if ($(this).hasClass(target)) {
+              $(this).removeClass('hidden');
+            } else {
+              $(this).addClass('hidden');
+            }
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
