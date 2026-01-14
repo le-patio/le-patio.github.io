@@ -7,12 +7,20 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   
   <style>
+    /* Override fixed positioning to enable scroll */
+    body, html {
+      position: relative !important;
+      height: auto !important;
+      overflow: auto !important;
+    }
+
     /* Estructura inspirada en age-hh */
     main {
       display: flex;
       margin-top: 100px; /* Espacio para el nav fijo */
       padding: 0 40px;
       gap: 40px;
+      padding-bottom: 50px;
     }
 
     /* Columna Izquierda: Imágenes */
