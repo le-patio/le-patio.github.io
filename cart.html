@@ -76,10 +76,10 @@
               <span id="final-total">0.00</span>€
             </strong>
           </p>
-
-          <button id="clear-cart-btn" class="hidden" onclick="clearCart()" style="margin-bottom: 20px; cursor: pointer;">Vaciar Carrito</button>
           
-          <div id="paypal-button-container" style="margin-top: 30px;"></div>
+          <button id="checkout-btn" class="hidden" onclick="startCheckout()" style="width: 20%; padding: 5px; margin-top: 20px; background-color: #000; color: #fff; border: none; cursor: pointer; font-family: inherit; text-transform: none; font-size: 0.9rem;">Proceder al Pago</button>
+          
+          <div id="paypal-button-container" class="hidden2" style="margin-top: 30px;"></div>
         </div>
       </div>
     </div>
@@ -139,19 +139,19 @@
       const cartItemsContainer = document.getElementById('cart-items');
       const emptyMessage = document.getElementById('empty');
       const cartContent = document.querySelector('.cartcontent');
-      const clearBtn = document.getElementById('clear-cart-btn');
+      const checkoutBtn = document.getElementById('checkout-btn');
       
       if (cart.length === 0) {
         cartItemsContainer.innerHTML = '';
         emptyMessage.style.display = 'block';
         cartContent.style.display = 'none';
-        clearBtn.classList.add('hidden');
+        checkoutBtn.classList.add('hidden');
         return;
       }
       
       emptyMessage.style.display = 'none';
       cartContent.style.display = 'block';
-      clearBtn.classList.remove('hidden');
+      checkoutBtn.classList.remove('hidden');
       
       let html = '';
       cart.forEach((item, index) => {
@@ -178,6 +178,15 @@
       updateCart();
     }
     
+    function startCheckout() {
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const paypalContainer = document.getElementById('paypal-button-container');
+      
+      // Hide button and show PayPal
+      checkoutBtn.classList.add('hidden');
+      paypalContainer.classList.remove('hidden2');
+    }
+    
     function updateItemQuantity(index, newQuantity) {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart[index].quantity = parseInt(newQuantity) || 1;
@@ -192,14 +201,6 @@
       localStorage.setItem('cart', JSON.stringify(cart));
       renderCart();
       updateCartCount();
-    }
-    
-    function clearCart() {
-      if (confirm('¿Vaciar el carrito?')) {
-        localStorage.setItem('cart', JSON.stringify([]));
-        renderCart();
-        updateCartCount();
-      }
     }
     
     function updateCart() {
