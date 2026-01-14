@@ -14,7 +14,7 @@
     <ul>
       <div class="first">
         <li class="cta_home">
-          <a class="internal a_home" href="index.html">LE PATIO</a>
+          <a class="internal a_home" href="shop.html">LE PATIO</a>
         </li>
         <li class="start">
           <p>Fine Jewelry</p>
@@ -92,5 +92,115 @@
 
   <script src="https://age-hh.com/assets/js/libs.js"></script>
   <script src="https://age-hh.com/assets/js/script.js"></script>
-</body>
-</html>
+
+  <script>
+    // Función para renderizar el carrito
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cart-items');
+      const emptyMessage = document.getElementById('empty');
+      const cartContent = document.querySelector('.cartcontent');
+      const clearBtn = document.getElementById('clear-cart-btn');
+      
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '';
+        emptyMessage.style.display = 'block';
+        cartContent.style.display = 'none';
+        clearBtn.classList.add('hidden');
+        return;
+      }
+      
+      emptyMessage.style.display = 'none';
+      cartContent.style.display = 'block';
+      clearBtn.classList.remove('hidden');
+      
+      let html = '';
+      cart.forEach((item, index) => {
+        html += `
+          <div class="cart-item" style="display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid #ccc;">
+            <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover;">
+            <div style="flex: 1;">
+              <h3 style="margin: 0 0 10px 0; font-size: 1rem;">${item.name}</h3>
+              <p style="margin: 5px 0; font-size: 0.9rem;">Talla: ${item.size}</p>
+              <p style="margin: 5px 0; font-size: 0.9rem;">Precio: ${item.price}€</p>
+              <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <label style="font-size: 0.9rem;">Cantidad:</label>
+                <input type="number" value="${item.quantity}" min="1" max="20" style="width: 60px; padding: 5px; border: 1px solid #000;" 
+                  onchange="updateItemQuantity(${index}, this.value)">
+                <button onclick="removeFromCart(${index})" style="padding: 5px 10px; background: #000; color: #fff; border: none; cursor: pointer; font-size: 0.8rem;">Eliminar</button>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <p style="font-size: 1.1rem; font-weight: bold;">${(item.price * item.quantity).toFixed(2)}€</p>
+            </div>
+          </div>
+        `;
+      });
+      
+      cartItemsContainer.innerHTML = html;
+      updateCart();
+    }
+    
+    // Actualizar cantidad de un item
+    function updateItemQuantity(index, newQuantity) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      newQuantity = parseInt(newQuantity);
+      
+      if (newQuantity < 1) {
+        removeFromCart(index);
+        return;
+      }
+      
+      cart[index].quantity = newQuantity;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+      updateCartCount();
+    }
+    
+    // Eliminar producto del carrito
+    function removeFromCart(index) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+      updateCartCount();
+    }
+    
+    // Vaciar carrito
+    function clearCart() {
+      if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+        localStorage.setItem('cart', JSON.stringify([]));
+        renderCart();
+        updateCartCount();
+      }
+    }
+    
+    // Actualizar totales
+    function updateCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const shipping = parseInt(document.getElementById('shipping').value) || 5;
+      
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal + shipping;
+      
+      document.getElementById('cart-total').textContent = subtotal.toFixed(2);
+      document.getElementById('final-total').textContent = total.toFixed(2);
+    }
+    
+    // Actualizar contador del carrito
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      const cartCountSpans = document.querySelectorAll('#cart-count');
+      cartCountSpans.forEach(span => {
+        span.textContent = `(${totalItems})`;
+      });
+    }
+    
+    // Renderizar al cargar la página
+    window.addEventListener('load', function() {
+      renderCart();
+      updateCartCount();
+    });
+  </script>

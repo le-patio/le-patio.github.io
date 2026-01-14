@@ -548,23 +548,6 @@ body:has(.banneropen) .footnav {
   display: none !important;
 }
 
-.screenshot {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 99;
-  background-size: contain;
-  transform-origin: none;
-  pointer-events: none;
-}
-@media screen and (max-width: 800px) {
-  .screenshot.small {
-    right: 10.5vw;
-  }
-}
-
 small {
   display: block;
 }

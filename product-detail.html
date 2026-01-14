@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
+  <title>Anillo Silver Leaf | LE PATIO</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  
+  <style>
+    /* Estructura inspirada en age-hh */
+    main {
+      display: flex;
+      margin-top: 100px; /* Espacio para el nav fijo */
+      padding: 0 40px;
+      gap: 40px;
+    }
+
+    /* Columna Izquierda: Imágenes */
+    .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .left img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    /* Columna Derecha: Información Fija */
+    .right {
+      flex: 0 0 350px;
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .product-info h1 {
+      font-size: 1.2rem;
+      font-weight: normal;
+      margin: 0 0 10px 0;
+      text-transform: uppercase;
+    }
+
+    .price {
+      margin-bottom: 30px;
+      font-size: 0.9rem;
+    }
+
+    .description {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-bottom: 40px;
+    }
+
+    /* Size y Quantity */
+    .size-section, .quantity-section {
+      margin-bottom: 20px;
+    }
+
+    .size-select, .quantity-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #000;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .quantity-input {
+      cursor: text;
+    }
+    .cta_add {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 15px 0;
+      width: 100%;
+      cursor: pointer;
+      font-family: inherit;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+      main { flex-direction: column; padding: 0 20px; }
+      .right { position: relative; top: 0; flex: 1; margin-bottom: 50px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <ul>
+      <div class="nav-left">
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="collections.html">Collections</a></li>
+      </div>
+      <div class="nav-right">
+        <li><a href="cart.html">Cart <span id="cart-count">(0)</span></a></li>
+      </div>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="left">
+      <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0" alt="Anillo Silver Leaf - Vista 1">
+      <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0" style="filter: grayscale(1);" alt="Anillo Silver Leaf - Detalle">
+    </div>
+
+    <div class="right">
+      <div class="product-info">
+        <h1>Anillo Silver Leaf</h1>
+        <p class="price">120.00€</p>
+        
+        <div class="description">
+          <p>Anillo artesanal inspirado en las formas orgánicas de la naturaleza. Pieza única realizada en plata de ley con acabado pulido.</p>
+          <p>Talla única ajustable.</p>
+        </div>
+
+        <div class="size-section">
+          <select class="size-select" id="size">
+            <option value="">Select a size</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+            <option value="24">24</option>
+          </select>
+        </div>
+
+        <div class="quantity-section">
+          <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="20">
+        </div>
+
+        <button class="cta_add" onclick="addToCart('anillo-silver-leaf')">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function addToCart(productId) {
+      const selectedSize = document.getElementById('size').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      
+      if (!selectedSize) {
+        alert('Por favor selecciona una talla');
+        return;
+      }
+      
+      // Obtener carrito actual del localStorage
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      // Crear objeto del producto
+      const product = {
+        id: productId,
+        name: 'Anillo Silver Leaf',
+        price: 120.00,
+        size: selectedSize,
+        quantity: quantity,
+        image: 'https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0'
+      };
+      
+      // Verificar si el producto con la misma talla ya existe
+      const existingProduct = cart.find(item => item.id === productId && item.size === selectedSize);
+      
+      if (existingProduct) {
+        // Si existe, sumar la cantidad
+        existingProduct.quantity += quantity;
+      } else {
+        // Si no existe, agregar al carrito
+        cart.push(product);
+      }
+      
+      // Guardar carrito en localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      // Actualizar contador del carrito
+      updateCartCount();
+      
+      alert(`✓ Producto añadido al carrito (Talla: ${selectedSize}, Cantidad: ${quantity})`);
+      
+      // Limpiar formulario
+      document.getElementById('size').value = '';
+      document.getElementById('quantity').value = 1;
+    }
+    
+    // Actualizar contador del carrito
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      // Actualizar span del contador en la navegación
+      const cartCountSpans = document.querySelectorAll('#cart-count');
+      cartCountSpans.forEach(span => {
+        span.textContent = `(${totalItems})`;
+      });
+    }
+    
+    // Actualizar contador al cargar la página
+    window.addEventListener('load', updateCartCount);
+  </script>
+
+</body>
+</html>
