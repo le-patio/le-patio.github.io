@@ -16,7 +16,7 @@ InView.init({
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 1) Lógica del carrito, PayPal y otros (se mantiene sin cambios)
+// 1) Lógica del carrito y otros (se mantiene sin cambios)
 // ─────────────────────────────────────────────────────────────────────────────
 
 let cart = [];
@@ -68,7 +68,6 @@ function updateCart() {
   const cartShippingSpan = document.getElementById("cart-shipping");
   const finalTotalSpan   = document.getElementById("final-total");
   const cartCountSpan    = document.getElementById("cart-count");
-  const paypalContainer  = document.getElementById("paypal-button-container");
   const checkoutBtn      = document.getElementById("checkout-btn");
   const clearCartBtn     = document.getElementById("clear-cart-btn");
 
@@ -111,7 +110,6 @@ function updateCart() {
   cartCountSpan.innerText    = `(${cartCount})`;
 
   const hasItems = cart.length > 0;
-  paypalContainer.classList.toggle("hidden", !hasItems);
   checkoutBtn.classList.toggle("hidden", !hasItems);
   clearCartBtn.classList.toggle("hidden", !hasItems);
 
@@ -122,89 +120,10 @@ function clearCart() {
     cart = [];
     updateCart();
     localStorage.removeItem("cart");
-    document.getElementById("paypal-button-container").classList.add("hidden2");
-}
-
-function startCheckout() {
-    document.getElementById("paypal-button-container").classList.remove("hidden2");
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     loadCart();
-    paypal.Buttons({
-        createOrder: function (data, actions) {
-          const totalAmount    = parseFloat(document.getElementById("final-total").innerText);
-          const itemTotal      = parseFloat(document.getElementById("cart-total").innerText);
-          const shippingTotal  = parseFloat(document.getElementById("cart-shipping").innerText);
-
-          const items = cart.map(item => {
-              // 1) Mantener solo valores de medida mayores a 0
-              const nonZeroMeasurements = Object.entries(item.measurements)
-                  .filter(([_, v]) => parseInt(v, 10) > 0);
-
-              // 2) Construir descripción
-              const measDesc = nonZeroMeasurements
-                  .map(([k, v]) => `${k.replace(/[-_]/g, ' ')}: ${v} cm`)
-                  .join(' | ');
-
-              // 3) Nombre base (máx. 127 caracteres)
-              const baseName = `${item.name} (${item.size})`;
-              let itemName = baseName;
-              if (itemName.length > 127) {
-                  itemName = itemName.slice(0, 124) + '...';
-              }
-
-              return {
-                  name: itemName,                       // se mantiene bajo 127 caracteres
-                  description: measDesc,                // todas las medidas reales aquí
-                  unit_amount: {
-                      currency_code: "EUR",
-                      value: item.price.toFixed(2)
-                  },
-                  quantity: item.quantity
-              };
-          });
-
-          return actions.order.create({
-              purchase_units: [{
-                  amount: {
-                      currency_code: "EUR",
-                      value: totalAmount.toFixed(2),
-                      breakdown: {
-                          item_total: { currency_code: "EUR", value: itemTotal.toFixed(2) },
-                          shipping:   { currency_code: "EUR", value: shippingTotal.toFixed(2) }
-                      }
-                  },
-                  items: items
-              }]
-          });
-
-        },
-        onApprove: function (data, actions) {
-          return actions.order.capture().then(function (details) {
-            document.getElementById("success-message").style.display = "block";
-            document.getElementById("empty").style.display = "none";
-
-            // ---- Enviar E-Mail ----
-            fetch("https://age-hh.com/send-order-mail.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                cart: cart,
-                subtotal: parseFloat(document.getElementById("cart-total").innerText),
-                shipping: parseFloat(document.getElementById("cart-shipping").innerText),
-                total: parseFloat(document.getElementById("final-total").innerText)
-              })
-            })
-            .then(res => res.text())
-            .then(txt => console.log("Respuesta del mail:", txt))
-            .catch(err => console.error("Error al enviar mail:", err));
-
-            // Después borrar el carrito
-            clearCart();
-          });
-        }
-    }).render("#paypal-button-container");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
