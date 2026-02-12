@@ -26,7 +26,7 @@
       width: 100%;
       z-index: 100;
       background: transparent !important;
-      padding: 20px 40px;
+      padding: 20px 20px;
     }
 
     nav ul {
@@ -71,7 +71,7 @@
     /* GRID DE PRODUCTOS (Lógica AGE hh) */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+      grid-template-columns: repeat(3, 1fr); /* 3 columnas */
       gap: 40px 20px;
       padding: 0 40px 80px 40px;
     }
@@ -81,14 +81,29 @@
       color: #000;
       display: block;
       transition: opacity 0.3s ease;
+      width: 100%;
+      height: 800px; /* Fixed height for all teasers */
+      overflow: hidden;
     }
 
     .productteaser img, .productteaser video {
       width: 100%;
-      height: auto;
+      height: 560px; /* Fixed image height */
       display: block;
       object-fit: cover;
+      transition: opacity 0.3s ease;
     }
+
+    .productdescription {
+      padding: 0 15px 15px 15px;
+      text-align: center;
+      font-size: 0.9rem;
+      height: 60px; /* Fixed description height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
 
     .productdescription {
       margin-top: 12px;
@@ -105,9 +120,27 @@
       .products-grid {
         grid-template-columns: 1fr; /* 1 columna en móvil */
         padding: 0 20px;
+        gap: 20px;
+      }
+      .productteaser {
+        height: 700px;
+      }
+      .productteaser img, .productteaser video {
+        height: 440px;
+      }
+      .productdescription {
+        height: 180px;
+        padding: 0 10px 10px 10px;
       }
       nav { padding: 20px; }
       .filter-container { padding: 0 20px; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablet */
+        gap: 30px 15px;
+      }
     }
   </style>
 </head>
@@ -151,23 +184,29 @@
     <div class="products-grid" ndx--title="LE PATIO / Shop" ndx--template="shop">
       
       <a class="productteaser anillos" href="product-detail.html" ndx-target="product-detail.html">
-        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0" alt="Anillo Silver Leaf">
+        <img src="https://d2w9rnfcy7mm78.cloudfront.net/43564401/original_0353f8e6b17ebef2d8405dc61a07ea68.png?1770920480?bc=0" 
+             data-hover-src="https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0" 
+             alt="Anillo Silver Leaf">
         <div class="productdescription">
-          Anillo Silver Leaf, 120.00€
+          LEAF RING <i style>(sterling silver and diamond)</i> 120.00€
         </div>
       </a>
 
       <a class="productteaser collares" href="product-detail.html" ndx-target="product-detail.html">
-        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41527893/original_bed7e61b1241647953bf8ab5e2ec2623.png?1764715602?bc=0" alt="Collar Aqua">
+        <img src="https://d2w9rnfcy7mm78.cloudfront.net/43564400/original_c298467834e3abc52ebf46afbe8f4987.png?1770920479?bc=0" 
+             data-hover-src="https://d2w9rnfcy7mm78.cloudfront.net/41486070/original_c09eabaecadc85a353e61115e1c6faa6.png?1764592713?bc=0" 
+             alt="Collar Aqua">
         <div class="productdescription">
-          Collar Aqua, 85.00€
+           AQUA NECKLACE <i style>(aquamarine stone)</i> 85.00€
         </div>
       </a>
 
       <a class="productteaser pendientes" href="product-detail.html" ndx-target="product-detail.html">
-        <img src="https://d2w9rnfcy7mm78.cloudfront.net/41581361/original_bee3adae780b76faae3a99ba00dbd66a.jpg?1764881765?bc=0" alt="Pendientes Drop">
+        <img src="https://d2w9rnfcy7mm78.cloudfront.net/43564402/original_44aefbddccd846fb0ad7fc87860ae9a0.png?1770920480?bc=0" 
+             data-hover-src="https://d2w9rnfcy7mm78.cloudfront.net/41581361/original_bee3adae780b76faae3a99ba00dbd66a.jpg?1764881765?bc=0" 
+             alt="Pendientes Drop">
         <div class="productdescription">
-          Pendientes Drop, 60.00€
+          DROP EARRING <i style>(gold plated and zircon )</i> 60.00€
         </div>
       </a>
 
@@ -216,6 +255,22 @@
     // Actualizar al cargar y cada vez que el storage cambie
     window.addEventListener('load', updateCartCount);
     window.addEventListener('storage', updateCartCount);
+
+    // Hover effect for product images
+    document.querySelectorAll('.productteaser img').forEach(img => {
+      const originalSrc = img.src;
+      const hoverSrc = img.getAttribute('data-hover-src');
+      
+      img.addEventListener('mouseenter', function() {
+        if (hoverSrc) {
+          this.src = hoverSrc;
+        }
+      });
+      
+      img.addEventListener('mouseleave', function() {
+        this.src = originalSrc;
+      });
+    });
   </script>
 </body>
 </html>

@@ -12,8 +12,7 @@
     /* Aseguramos que el cuerpo no tenga scroll en la home */
     body, html {
       margin: 0;
-      padding: 0;
-      overflow: hidden; 
+      padding: 0;      
       background-color: #000;
       font-family: 'Times New Roman', Times, serif;
     }
@@ -57,8 +56,9 @@
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 20;
+      z-index: 100;
       background: transparent !important;
+      padding: 20px 20px;
     }
 
     /* Ajuste de navegación */
@@ -66,14 +66,19 @@
       display: flex;
       justify-content: space-between;
       list-style: none;
-      padding: 20px 40px;
+      padding: 0;
       margin: 0;
+      font-size: 0.9rem;
     }
 
-    nav ul li a {
-      color: #000000 !important;
-      text-transform: none;
-      font-size: 0.9rem;      
+    nav a {
+      color: #000;
+      
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      gap: 20px;
     }
   </style>
 </head>
