@@ -130,6 +130,36 @@ function clearCart() {
   return false;
 }
 
+/**
+ * Send order confirmation email via PHP endpoint
+ */
+function sendOrderEmail(orderData) {
+  return fetch('send-order.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    console.log('Order email sent successfully:', data);
+    return data;
+  })
+  .catch(error => {
+    console.error('Failed to send order email:', error);
+    throw error;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', updateCartCount);
 window.addEventListener('storage', updateCartCount);
 

@@ -53,7 +53,11 @@
     <div class="container">
       <div class="cart">
         <p id="empty">Tu carrito está actualmente vacío.</p>
-        <p id="success-message" style="display:none; text-align: center; padding: 40px; border: 0px solid #000;">Gracias por tu pedido. Nos pondremos en contacto contigo pronto vía email con los detalles de tu compra.</p>
+        <p id="success-message" style="display:none; text-align: center; padding: 40px; border: 0px solid #000;">
+          <strong>¡Pedido confirmado!</strong><br>
+          Gracias por tu compra. Hemos enviado los detalles de tu pedido a tu correo electrónico.<br>
+          <small style="opacity: 0.7; margin-top: 15px; display: block;">Nos pondremos en contacto contigo pronto con los detalles de tu envío.</small>
+        </p>
 
         <div class="cartcontent">
           <div id="cart-items"></div>
@@ -129,9 +133,29 @@
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
-          document.querySelector('.cartcontent').style.display = 'none';
-          document.getElementById('success-message').style.display = 'block';
-          clearCart();
+          // Get cart and order details
+          const cart = getCart();
+          const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+          const customerEmail = details.payer.email_address;
+
+          // Send order confirmation email
+          sendOrderEmail({
+            cart: cart,
+            email: customerEmail,
+            shipping: shipping,
+            paypalOrderId: details.id
+          }).then(response => {
+            // Hide cart and show success message
+            document.querySelector('.cartcontent').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+            clearCart();
+          }).catch(error => {
+            console.error('Error sending order email:', error);
+            // Still show success even if email fails
+            document.querySelector('.cartcontent').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+            clearCart();
+          });
         });
       },
       onError: function(err) {
