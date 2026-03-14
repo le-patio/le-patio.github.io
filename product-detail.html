@@ -149,27 +149,32 @@
           <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="20">
         </div>
 
-        <button class="cta_add" onclick="addToCart('anillo-silver-leaf')">
+        <button class="cta_add" onclick="addToCartForm('anillo-silver-leaf')">
           Add to Cart
         </button>
       </div>
     </div>
   </main>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="libs.js"></script>
+  <script src="script.js"></script>
+
   <script>
-    function addToCart(productId) {
+    function addToCartForm(productId) {
       const selectedSize = document.getElementById('size').value;
-      const quantity = parseInt(document.getElementById('quantity').value);
+      const quantity = parseInt(document.getElementById('quantity').value, 10);
       
       if (!selectedSize) {
         alert('Por favor selecciona una talla');
         return;
       }
       
-      // Obtener carrito actual del localStorage
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (quantity < 1) {
+        alert('La cantidad debe ser mayor a 0');
+        return;
+      }
       
-      // Crear objeto del producto
       const product = {
         id: productId,
         name: 'Anillo Silver Leaf',
@@ -179,44 +184,17 @@
         image: 'https://d2w9rnfcy7mm78.cloudfront.net/41581360/original_b892d287b9e6b259d3c99b09f68450a6.jpg?1764881763?bc=0'
       };
       
-      // Verificar si el producto con la misma talla ya existe
-      const existingProduct = cart.find(item => item.id === productId && item.size === selectedSize);
-      
-      if (existingProduct) {
-        // Si existe, sumar la cantidad
-        existingProduct.quantity += quantity;
-      } else {
-        // Si no existe, agregar al carrito
-        cart.push(product);
+      if (addToCart(product)) {
+        alert(`✓ Producto añadido al carrito (Talla: ${selectedSize}, Cantidad: ${quantity})`);
+        document.getElementById('size').value = '';
+        document.getElementById('quantity').value = 1;
       }
-      
-      // Guardar carrito en localStorage
-      localStorage.setItem('cart', JSON.stringify(cart));
-      
-      // Actualizar contador del carrito
+    }
+
+    // Initialize cart count on page load
+    window.addEventListener('load', function() {
       updateCartCount();
-      
-      alert(`✓ Producto añadido al carrito (Talla: ${selectedSize}, Cantidad: ${quantity})`);
-      
-      // Limpiar formulario
-      document.getElementById('size').value = '';
-      document.getElementById('quantity').value = 1;
-    }
-    
-    // Actualizar contador del carrito
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      
-      // Actualizar span del contador en la navegación
-      const cartCountSpans = document.querySelectorAll('#cart-count');
-      cartCountSpans.forEach(span => {
-        span.textContent = `(${totalItems})`;
-      });
-    }
-    
-    // Actualizar contador al cargar la página
-    window.addEventListener('load', updateCartCount);
+    });
   </script>
 
 </body>

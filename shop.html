@@ -231,59 +231,26 @@
   </main>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="libs.js"></script>
+  <script src="script.js"></script>
   <script>
-    $(document).ready(function() {
-      // Lógica de filtrado
-      $('.filter span').on('click', function() {
-        // UI de los botones
-        $('.filter span').removeClass('on');
-        $(this).addClass('on');
-
-        const target = $(this).attr('data-target');
-
-        // Filtrado de elementos
-        if (target === 'all') {
-          $('.productteaser').removeClass('hidden');
-        } else {
-          $('.productteaser').each(function() {
-            if ($(this).hasClass(target)) {
-              $(this).removeClass('hidden');
-            } else {
-              $(this).addClass('hidden');
-            }
+    // Shop-specific initialization and hover effects
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCartCount();
+      
+      // Hover effect for product images with data-hover-src
+      document.querySelectorAll('.productteaser img').forEach(img => {
+        const originalSrc = img.src;
+        const hoverSrc = img.getAttribute('data-hover-src');
+        
+        if (hoverSrc) {
+          img.addEventListener('mouseenter', function() {
+            this.src = hoverSrc;
+          });
+          img.addEventListener('mouseleave', function() {
+            this.src = originalSrc;
           });
         }
-      });
-    });
-
-    // Actualizar contador del carrito
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      
-      const cartCountSpans = document.querySelectorAll('#cart-count');
-      cartCountSpans.forEach(span => {
-        span.textContent = `(${totalItems})`;
-      });
-    }
-    
-    // Actualizar al cargar y cada vez que el storage cambie
-    window.addEventListener('load', updateCartCount);
-    window.addEventListener('storage', updateCartCount);
-
-    // Hover effect for product images
-    document.querySelectorAll('.productteaser img').forEach(img => {
-      const originalSrc = img.src;
-      const hoverSrc = img.getAttribute('data-hover-src');
-      
-      img.addEventListener('mouseenter', function() {
-        if (hoverSrc) {
-          this.src = hoverSrc;
-        }
-      });
-      
-      img.addEventListener('mouseleave', function() {
-        this.src = originalSrc;
       });
     });
   </script>

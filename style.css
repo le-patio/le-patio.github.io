@@ -560,3 +560,58 @@ small span {
     display: none;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESPONSIVE IMPROVEMENTS & CONSISTENCY
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Better form styling */
+input[type="number"],
+input[type="text"],
+select {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+button {
+  transition: opacity 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Accessibility improvements */
+button:focus,
+input:focus,
+select:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Cart improvements */
+.cart-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile-first responsive adjustments */
+@media screen and (max-width: 600px) {
+  body, html {
+    font-size: 4.5vw;
+  }
+  
+  nav ul > div {
+    width: 100vw !important;
+  }
+  
+  .productteaser {
+    width: 100vw !important;
+  }
+}
+
+/* Tablet adjustments */
+@media screen and (min-width: 801px) and (max-width: 1024px) {
+  body, html {
+    font-size: 1.6vw;
+  }
+}

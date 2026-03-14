@@ -65,7 +65,7 @@
 
           <div class="shipping" style="margin-top: 10px;">
             <label for="shipping" class="width3">Seleccionar Envío:</label>
-            <select id="shipping" onchange="updateCart()" style="background: transparent; border: 0px solid #000; font-family: inherit;">
+            <select id="shipping" onchange="updateCartDisplay()" style="background: transparent; border: 0px solid #000; font-family: inherit;">
               <option value="5">5€ (España - Península)</option>
               <option value="10">10€ (Europa)</option>
               <option value="15">15€ (Resto del mundo)</option>
@@ -103,10 +103,10 @@
   </nav>
 
   <script src="libs.js"></script>
-  
+  <script src="script.js"></script>
 
   <script>
-    // --- LÓGICA DE PAYPAL  ---
+    // --- PAYPAL BUTTONS ---
     paypal.Buttons({
       style: {
         color: 'black',
@@ -114,31 +114,35 @@
         label: 'checkout'
       },
       createOrder: function(data, actions) {
-        // Obtenemos el total dinámico del elemento HTML
-        const totalValue = document.getElementById('final-total').textContent;
+        const totalValue = parseFloat(document.getElementById('final-total').textContent.replace('€', ''));
+        if (!totalValue || totalValue <= 0) {
+          return actions.resolve(); // Handle error
+        }
         return actions.order.create({
           purchase_units: [{
             amount: {
               currency_code: 'EUR',
-              value: totalValue
+              value: totalValue.toFixed(2)
             }
           }]
         });
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
-          // Acción tras pago exitoso
           document.querySelector('.cartcontent').style.display = 'none';
           document.getElementById('success-message').style.display = 'block';
-          localStorage.removeItem('cart');
-          updateCartCount();
+          clearCart();
         });
+      },
+      onError: function(err) {
+        console.error('PayPal error:', err);
+        alert('Payment error. Please try again.');
       }
     }).render('#paypal-button-container');
 
-    // --- FUNCIONES DEL CARRITO ---
+    // --- CART DISPLAY FUNCTIONS ---
     function renderCart() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cart = getCart();
       const cartItemsContainer = document.getElementById('cart-items');
       const emptyMessage = document.getElementById('empty');
       const cartContent = document.querySelector('.cartcontent');
@@ -158,71 +162,58 @@
       
       let html = '';
       cart.forEach((item, index) => {
+        const itemTotal = (parseFloat(item.price) * parseInt(item.quantity, 10)).toFixed(2);
         html += `
           <div class="cart-item" style="display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid #000; align-items: center;">
-            <img src="${item.image}" alt="${item.name}" style="width: 80px; height: 100px; object-fit: cover;">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" style="width: 80px; height: 100px; object-fit: cover;">
             <div style="flex: 1;">
-              <h3 style="margin: 0; font-size: 0.9rem; text-transform: uppercase;">${item.name}</h3>
-              <p style="margin: 5px 0; font-size: 0.8rem; opacity: 0.6;">Talla: ${item.size}</p>
+              <h3 style="margin: 0; font-size: 0.9rem; text-transform: uppercase;">${escapeHtml(item.name)}</h3>
+              <p style="margin: 5px 0; font-size: 0.8rem; opacity: 0.6;">Talla: ${escapeHtml(item.size)}</p>
               <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
                 <input type="number" value="${item.quantity}" min="1" style="width: 40px; background: transparent; border: 1px solid #000; text-align: center;" 
-                  onchange="updateItemQuantity(${index}, this.value)">
-                <button onclick="removeFromCart(${index})" style="background: none; border: none; cursor: pointer; text-decoration: underline; font-size: 0.7rem;">Remove</button>
+                  onchange="updateItemQuantity(${index}, this.value); renderCart(); updateCartDisplay();">
+                <button onclick="removeFromCart(${index}); renderCart(); updateCartDisplay();" style="background: none; border: none; cursor: pointer; text-decoration: underline; font-size: 0.7rem;">Remove</button>
               </div>
             </div>
             <div style="text-align: right;">
-              <p style="font-size: 0.9rem;">${(item.price * item.quantity).toFixed(2)}€</p>
+              <p style="font-size: 0.9rem;">${itemTotal}€</p>
             </div>
           </div>
         `;
       });
       
       cartItemsContainer.innerHTML = html;
-      updateCart();
+      updateCartDisplay();
+    }
+    
+    function updateCartDisplay() {
+      const cart = getCart();
+      const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+      const subtotal = cart.reduce((sum, item) => sum + (parseFloat(item.price) * parseInt(item.quantity, 10)), 0);
+      document.getElementById('cart-total').textContent = subtotal.toFixed(2);
+      document.getElementById('final-total').textContent = (subtotal + shipping).toFixed(2);
     }
     
     function startCheckout() {
       const checkoutBtn = document.getElementById('checkout-btn');
       const paypalContainer = document.getElementById('paypal-button-container');
-      
-      // Hide button and show PayPal
       checkoutBtn.classList.add('hidden');
       paypalContainer.classList.remove('hidden2');
     }
     
-    function updateItemQuantity(index, newQuantity) {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart[index].quantity = parseInt(newQuantity) || 1;
-      localStorage.setItem('cart', JSON.stringify(cart));
-      renderCart();
-      updateCartCount();
+    /**
+     * Escape HTML to prevent XSS
+     */
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
     
-    function removeFromCart(index) {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart.splice(index, 1);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      renderCart();
-      updateCartCount();
-    }
-    
-    function updateCart() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const shipping = parseFloat(document.getElementById('shipping').value) || 0;
-      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      document.getElementById('cart-total').textContent = subtotal.toFixed(2);
-      document.getElementById('final-total').textContent = (subtotal + shipping).toFixed(2);
-    }
-    
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      document.querySelectorAll('#cart-count').forEach(span => span.textContent = `(${totalItems})`);
-    }
-    
+    // Initialize on load
     window.addEventListener('load', function() {
       renderCart();
-      updateCartCount();
     });
   </script>
 </body>

@@ -118,22 +118,5 @@
   <script src="libs.js"></script>
   <script src="script.js"></script>
 
-  <script>
-    // Actualizar contador del carrito
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      
-      const cartCountSpans = document.querySelectorAll('#cart-count');
-      cartCountSpans.forEach(span => {
-        span.textContent = `(${totalItems})`;
-      });
-    }
-    
-    // Actualizar al cargar y cada vez que el storage cambie
-    window.addEventListener('load', updateCartCount);
-    window.addEventListener('storage', updateCartCount);
-  </script>
-
 </body>
 </html>

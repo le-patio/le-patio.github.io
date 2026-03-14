@@ -15,16 +15,123 @@ InView.observeWithin(document);
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Contador del carrito (solo el número en el nav, sin lógica de carrito)
+// CART MANAGEMENT - Centralized & Secure
 // ─────────────────────────────────────────────────────────────────────────────
 
-function updateCartCountNav() {
-  const cart  = JSON.parse(localStorage.getItem('cart')) || [];
-  const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.querySelectorAll('#cart-count').forEach(el => el.textContent = `(${total})`);
+/**
+ * Safely parse cart data from localStorage with error handling
+ * @returns {Array} Cart items array
+ */
+function getCart() {
+  try {
+    const cart = localStorage.getItem('cart');
+    return cart ? JSON.parse(cart) : [];
+  } catch (e) {
+    console.error('Cart data corrupted:', e);
+    localStorage.removeItem('cart');
+    return [];
+  }
 }
 
-document.addEventListener('DOMContentLoaded', updateCartCountNav);
+/**
+ * Update cart count display across all pages
+ */
+function updateCartCount() {
+  try {
+    const cart = getCart();
+    const total = cart.reduce((sum, item) => sum + (parseInt(item.quantity, 10) || 0), 0);
+    document.querySelectorAll('#cart-count').forEach(el => {
+      el.textContent = `(${total})`;
+    });
+  } catch (e) {
+    console.error('Error updating cart count:', e);
+    // Fallback to 0 on error
+    document.querySelectorAll('#cart-count').forEach(el => el.textContent = '(0)');
+  }
+}
+
+/**
+ * Add item to cart with validation
+ */
+function addToCart(product) {
+  try {
+    // Validate product data
+    if (!product || !product.id || !product.price) {
+      console.error('Invalid product data');
+      alert('Error: Invalid product');
+      return false;
+    }
+
+    let cart = getCart();
+    const existingProduct = cart.find(item => item.id === product.id && item.size === product.size);
+    
+    if (existingProduct) {
+      existingProduct.quantity += product.quantity;
+    } else {
+      cart.push(product);
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    return true;
+  } catch (e) {
+    console.error('Error adding to cart:', e);
+    alert('Error adding product to cart');
+    return false;
+  }
+}
+
+/**
+ * Update item quantity
+ */
+function updateItemQuantity(index, newQuantity) {
+  try {
+    const cart = getCart();
+    const qty = parseInt(newQuantity, 10) || 1;
+    if (qty > 0) {
+      cart[index].quantity = qty;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      return true;
+    }
+  } catch (e) {
+    console.error('Error updating quantity:', e);
+  }
+  return false;
+}
+
+/**
+ * Remove item from cart
+ */
+function removeFromCart(index) {
+  try {
+    const cart = getCart();
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    return true;
+  } catch (e) {
+    console.error('Error removing from cart:', e);
+  }
+  return false;
+}
+
+/**
+ * Clear entire cart
+ */
+function clearCart() {
+  try {
+    localStorage.removeItem('cart');
+    updateCartCount();
+    return true;
+  } catch (e) {
+    console.error('Error clearing cart:', e);
+  }
+  return false;
+}
+
+document.addEventListener('DOMContentLoaded', updateCartCount);
+window.addEventListener('storage', updateCartCount);
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -134,7 +241,7 @@ $(document).ready(function () {
     }
 
     getActive();
-    updateCartCountNav();
+    updateCartCount();
     InView.observeWithin(document.getElementById('content') || document);
   }
 
