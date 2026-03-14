@@ -131,33 +131,26 @@
           }]
         });
       },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          // Get cart and order details
-          const cart = getCart();
-          const shipping = parseFloat(document.getElementById('shipping').value) || 0;
-          const customerEmail = details.payer.email_address;
+// Busca esta parte en tu cart.html y cámbiala por esto:
+onApprove: function(data, actions) {
+  return actions.order.capture().then(function(details) {
+    // 1. Mostramos el mensaje de éxito directamente
+    document.querySelector('.cartcontent').style.display = 'none';
+    document.getElementById('success-message').style.display = 'block';
+    
+    // 2. Vaciamos el carrito
+    clearCart();
 
-          // Send order confirmation email
-          sendOrderEmail({
-            cart: cart,
-            email: customerEmail,
-            shipping: shipping,
-            paypalOrderId: details.id
-          }).then(response => {
-            // Hide cart and show success message
-            document.querySelector('.cartcontent').style.display = 'none';
-            document.getElementById('success-message').style.display = 'block';
-            clearCart();
-          }).catch(error => {
-            console.error('Error sending order email:', error);
-            // Still show success even if email fails
-            document.querySelector('.cartcontent').style.display = 'none';
-            document.getElementById('success-message').style.display = 'block';
-            clearCart();
-          });
-        });
-      },
+    // 3. Intentamos enviar el email (sabemos que fallará en GitHub, 
+    // pero al estar fuera de la cadena principal, no bloqueará el mensaje de éxito)
+    sendOrderEmail({
+      cart: getCart(),
+      email: details.payer.email_address,
+      shipping: parseFloat(document.getElementById('shipping').value) || 0,
+      paypalOrderId: details.id
+    });
+  });
+},
       onError: function(err) {
         console.error('PayPal error:', err);
         alert('Payment error. Please try again.');
